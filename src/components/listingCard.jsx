@@ -5,18 +5,37 @@ import {
   faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AddListingModal from "./modals/addListingModal";
 
-const ListingCard = ({ listing }) => {
+const ListingCard = ({ Listing }) => {
   const [listingMenuOpen, setListingMenuOpen] = useState(false);
+  const [postModalOpen, setPostModalOpen] = useState(false);
+  const [editingListing, setEditingListing] = useState(null);
+  const [listing, setListing] = useState(Listing);
+
+  const handlePostSuccess = (updatedListing) => { 
+      setListing(updatedListing);
+      setListingMenuOpen(false);
+  }
 
   const handleMenuClick = () => {
     setListingMenuOpen(!listingMenuOpen);
   };
 
+  const handlePostModalOpen = () => {
+    setEditingListing(listing);
+    setPostModalOpen(true);
+  };
+
+   const handlePostModalClose = () => {
+    setPostModalOpen(false);
+    setEditingListing(null);
+  };
+
   const isOwner = () => {
     const userRole = localStorage.getItem("role")?.toLowerCase();
     const userId = parseInt(localStorage.getItem("id"), 10);
-    return userRole === "employer" && listing.employer_id === userId;
+    return userRole === "employer" && Listing.employer_id === userId;
   };
 
   const createdAt = listing.createdAt;
@@ -27,10 +46,14 @@ const ListingCard = ({ listing }) => {
       {/* Header */}
       <div className="flex flex-row justify-between p-4">
         <div className="flex flex-row gap-3">
-          <div className="rounded-xl bg-blue-900 w-16 h-16" />
+          {listing.employer.profile_url ? (<img
+                  src={`http://localhost:8080${listing.employer.profile_url}`}
+                  alt="Profile"
+                  className="w-16 h-16 rounded-xl object-cover"
+                />) : (<div className="rounded-xl bg-gray-200 w-16 h-16" />)}
           <div className="flex flex-col justify-center">
             <span className="text-lg font-semibold text-gray-900">
-              {listing.employer.name}
+              {Listing.employer.name}
             </span>
           </div>
         </div>
@@ -58,10 +81,9 @@ const ListingCard = ({ listing }) => {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="flex flex-row justify-end p-4 border-t text-sm text-gray-600 font-semibold">
         <a
-          href={`mailto:${listing.employer.email}`}
+          href={`mailto:${Listing.employer.email}`}
           className="flex flex-row items-center gap-2 px-4 py-2 rounded-xl border hover:bg-gray-100 transition"
         >
           <FontAwesomeIcon icon={faEnvelope} className="h-5 w-5" />
@@ -69,13 +91,14 @@ const ListingCard = ({ listing }) => {
         </a>
       </div>
 
-      {/* Dropdown Menu */}
       {listingMenuOpen && (
         <ul className="absolute top-12 right-4 bg-white w-24 rounded-lg shadow-lg border border-gray-100 z-10">
-          <li className="p-2 hover:bg-gray-100 cursor-pointer">Edit</li>
+          <li onClick={handlePostModalOpen} className="p-2 hover:bg-gray-100 cursor-pointer">Edit</li>
           <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete</li>
         </ul>
       )}
+
+      <AddListingModal isOpen={postModalOpen} onClose={handlePostModalClose} listing={editingListing} onPostSuccess={handlePostSuccess}/>
     </div>
   );
 };

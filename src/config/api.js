@@ -110,6 +110,13 @@ export async function getUser(role, id) {
   return resp;
 }
 
+export async function updateProfile(role, id, data) {
+  const resp = await PrivateMultipartDataApiCall.put(`users/profile/${role}/${id}`, data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+
 export async function getAllStudents(queryParams) {
   const resp = await PrivateMultipartDataApiCall.get('users/student', {
     params: queryParams,
@@ -172,6 +179,48 @@ export async function viewPortfolio(id) {
   return resp;
 }
 
+export async function getSuggestions(id) {
+    const resp = await PrivateMultipartDataApiCall.get(`portfolios/suggestions/${id}`)
+      .then((response) => response)
+      .catch((error) => errorCatch(error));
+    return resp;
+  }
+
+  export async function addSuggestion(id, data) {
+    const resp = await PrivateJsonDataApiCall.post(`portfolios/suggestions/${id}`, data)
+      .then((response) => response)
+      .catch((error) => errorCatch(error));
+    return resp;
+  }
+
+  export async function editSuggestion(id, data) {
+    const resp = await PrivateJsonDataApiCall.put(`portfolios/suggestions/${id}`, data)
+      .then((response) => response)
+      .catch((error) => errorCatch(error));
+    return resp;
+  }
+
+  export async function deleteSuggestion(id) {
+    const resp = await PrivateJsonDataApiCall.delete(`portfolios/suggestions/${id}`)
+      .then((response) => response)
+      .catch((error) => errorCatch(error));
+    return resp;
+  }
+
+  export async function sharePortfolio(id) {
+    const resp = await PrivateJsonDataApiCall.post(`portfolios/${id}/share`)
+      .then((response) => response)
+      .catch((error) => errorCatch(error));
+    return resp;
+  }
+
+  export async function getSharedPortfolio(token) {
+    const resp = await PrivateJsonDataApiCall.get(`portfolios/shared/${token}`)
+      .then((response) => response)
+      .catch((error) => errorCatch(error));
+    return resp;
+  }
+
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////JOB-LISTINGS///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -185,6 +234,20 @@ export async function getAllListings() {
 
 export async function addListing(data) {
   const resp = await PrivateJsonDataApiCall.post('job-listings', data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+
+export async function editListing(id, data) {
+  const resp = await PrivateJsonDataApiCall.put(`job-listings/${id}`, data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+
+export async function deleteListing(id) {
+  const resp = await PrivateJsonDataApiCall.delete(`job-listings/${id}`)
     .then((response) => response)
     .catch((error) => errorCatch(error));
   return resp;

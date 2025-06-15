@@ -7,8 +7,8 @@ import { useAuth } from "../../guards/AuthContext";
 
 const NavBar = () => {
   const [menuDropdownOpen, setMenuDropdownOpen] = useState(false);
-  const [notificationsDropdownOpen, setNotificationsDropdownOpen] = useState(false);
-  const [profileImageUrl] = useState(false); // dummy
+  const [notificationsDropdownOpen, setNotificationsDropdownOpen] =
+    useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
@@ -28,6 +28,19 @@ const NavBar = () => {
     navigate("/");
   };
 
+  const handleRefreshProfile = () => {
+  navigate("/home", { replace: true });
+
+  setTimeout(() => {
+    navigate("/profile", {
+      state: {
+        userId: localStorage.getItem("id"),
+        userRole: localStorage.getItem("role"),
+      },
+    });
+  }, 50);
+};
+
   const menuItems = [
     { label: "Home", path: "/home" },
     { label: "Portfolios", path: "/portfolios" },
@@ -46,10 +59,16 @@ const NavBar = () => {
   const currentPath = location.pathname;
   const active = pathToLabelMap[currentPath] || "";
 
+  const profileImageUrl = localStorage.getItem("profile_url");
+
   return (
     <div className="w-full bg-white flex flex-row justify-between items-center p-4 sm:p-8 m-0 relative">
       <div className="flex items-center">
-        <img src="/images/Logo.png" alt="AUT" className="hidden sm:block w-24" />
+        <img
+          src="/images/Logo.png"
+          alt="AUT"
+          className="hidden sm:block w-24"
+        />
         <FontAwesomeIcon
           icon={faBars}
           className={`h-7 w-7 block sm:hidden cursor-pointer ${
@@ -106,17 +125,18 @@ const NavBar = () => {
             }`}
             onClick={toggleMenuDropdown}
           />
-          {profileImageUrl ? (
+          {profileImageUrl && profileImageUrl !== "null" ? (
             <img
-              src={profileImageUrl}
+              src={`http://localhost:8080${profileImageUrl}`}
               alt="Profile"
               className="h-10 w-10 rounded-full"
+              onClick={handleRefreshProfile}
             />
           ) : (
             <FontAwesomeIcon
               icon={faUser}
               className="h-6 w-6 text-green-500 bg-green-200 p-2 rounded-full"
-              onClick={() => navigate("/profile")}
+              onClick={handleRefreshProfile}
             />
           )}
         </div>
@@ -147,7 +167,9 @@ const NavBar = () => {
               3d Community
             </li>
             <li className="px-4 py-2 cursor-pointer">Profile</li>
-            <li className="sm:hidden px-4 py-2 cursor-pointer">Notifications</li>
+            <li className="sm:hidden px-4 py-2 cursor-pointer">
+              Notifications
+            </li>
             <li className="px-4 py-2 cursor-pointer" onClick={handleLogout}>
               Logout
             </li>

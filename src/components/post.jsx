@@ -130,6 +130,8 @@ const Post = ({ post, onDelete }) => {
     }
   };
 
+  const profileImage = localStorage.getItem("profile_url");
+
   const isCommentOwner = (comment) => {
     const userRole = localStorage.getItem("role")?.toLowerCase();
     const userId = parseInt(localStorage.getItem("id"), 10);
@@ -199,7 +201,11 @@ const Post = ({ post, onDelete }) => {
     <div className="relative max-w-lg bg-white rounded-lg flex flex-col shadow-md mb-5">
       <div className="flex justify-between p-4">
         <div className="flex gap-3">
-          <div className="rounded-xl bg-blue-900 w-16 h-16" />
+          {post.user.profile_url ? (<img
+                  src={`http://localhost:8080${post.user.profile_url}`}
+                  alt="Profile"
+                  className="w-16 h-16 rounded-xl object-cover"
+                />) : (<div className="rounded-xl bg-gray-200 w-16 h-16" />)}
           <div>
             <span className="text-lg font-semibold">
               {post.user.first_name} {post.user.last_name} {post.user.name}
@@ -329,7 +335,15 @@ const Post = ({ post, onDelete }) => {
             {commentsDropdownOpen && (
         <div className="flex flex-col w-full gap-6 p-4">
           <div className="flex gap-4 items-start">
-            <div className="bg-gray-200 w-12 h-12 rounded-lg" />
+             {profileImage && profileImage !== "null" ? (
+                <img
+                  src={`http://localhost:8080${profileImage}`}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="bg-gray-200 border border-amber-50 w-12 h-12 rounded-lg"></div>
+              )}
             <div className="flex border border-gray-300 w-5/6 rounded-lg bg-white overflow-hidden">
               <input
                 type="text"
@@ -350,7 +364,17 @@ const Post = ({ post, onDelete }) => {
 
           {comments.map((comment, index) => (
             <div key={index} className="relative flex gap-2">
-              <div className="bg-gray-200 w-12 h-12 rounded-lg" />
+               {comment.user.profile_url !== null ? (
+                <img
+                  src={`http://localhost:8080${comment.user.profile_url}`}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="h-12 w-12 bg-gray-200 rounded-xl">
+                  {/*Image*/}
+                </div>
+              )}
               <div className="w-5/6">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-sm">

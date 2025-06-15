@@ -5,7 +5,12 @@ import { addPost } from "../../config/api";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const AddPostModal = ({ isOpen, onClose, initialContent = "", onPostSuccess }) => {
+const AddPostModal = ({
+  isOpen,
+  onClose,
+  initialContent = "",
+  onPostSuccess,
+}) => {
   const [media, setMedia] = useState(null);
 
   const username = localStorage.getItem("name");
@@ -19,7 +24,7 @@ const AddPostModal = ({ isOpen, onClose, initialContent = "", onPostSuccess }) =
     touched,
     isSubmitting,
     resetForm,
-    setFieldValue
+    setFieldValue,
   } = useFormik({
     initialValues: {
       postContent: initialContent,
@@ -61,6 +66,8 @@ const AddPostModal = ({ isOpen, onClose, initialContent = "", onPostSuccess }) =
     }
   };
 
+  const profileImage = localStorage.getItem("profile_url");
+
   return (
     <div className="fixed min-w-[22.625rem] inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="w-2/3 lg:w-1/3 bg-white rounded-lg p-6 flex flex-col gap-6">
@@ -75,7 +82,15 @@ const AddPostModal = ({ isOpen, onClose, initialContent = "", onPostSuccess }) =
         </div>
 
         <div className="flex flex-row gap-2">
-          <div className="bg-gray-200 border border-amber-50 w-16 h-16 rounded-lg"></div>
+          {profileImage && profileImage !== "null"? (
+            <img
+              src={`http://localhost:8080${profileImage}`}
+              alt="Profile"
+              className="w-12 h-12 rounded-xl object-cover"
+            />
+          ) : (
+            <div className="bg-gray-200 border border-amber-50 w-16 h-16 rounded-lg"></div>
+          )}
           <div className="flex flex-col">
             <span className="text-lg font-semibold">{username}</span>
           </div>

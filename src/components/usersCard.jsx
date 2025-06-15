@@ -6,7 +6,15 @@ const UsersCard = ({ type, users }) => {
   const navigate = useNavigate();
 
   const handleNavigate = (user) => {
-    console.log("Navigating to user profile:", user);
+    const userRole = type.toLowerCase().slice(0, -1);
+    console.log(userRole);
+
+    navigate("/profile", {
+      state: {
+        userId: user.student_id ? user.student_id : user.id,
+        userRole: userRole,
+      },
+    });
   };
 
   return (
@@ -27,9 +35,17 @@ const UsersCard = ({ type, users }) => {
         users.map((user) => (
           <div className="flex flex-row gap-6 xl:gap-12 justify-between items-center">
             <div className="flex flex-row gap-2">
-              <div className="h-12 w-12 bg-gray-200 rounded-xl">
-                {/*Image*/}
-              </div>
+              {user.profile_url !== null ? (
+                <img
+                  src={`http://localhost:8080${user.profile_url}`}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="h-12 w-12 bg-gray-200 rounded-xl">
+                  {/*Image*/}
+                </div>
+              )}
               <div className="flex flex-col">
                 <span className="font-semibold">
                   {user.first_name} {user.last_name} {user.name}
@@ -37,7 +53,7 @@ const UsersCard = ({ type, users }) => {
               </div>
             </div>
             <button
-              onClick={handleNavigate(user)}
+              onClick={() => handleNavigate(user)}
               className="flex flex-row gap-2 items-center text-sm rounded bg-white px-3 py-1 border border-gray-200 h-2/3"
             >
               <FontAwesomeIcon icon={faPlus} />

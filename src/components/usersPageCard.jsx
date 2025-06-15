@@ -4,8 +4,13 @@ import {
   faPlus,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
+import {  useState } from "react"; 
+import AddUserModal from "../components/modals/addUserModal"
 
 const UsersPageCard = ({ type, users, pagination = {}, onPageChange }) => {
+
+const [showAddUserModal, setShowAddUserModal] = useState(false);
+
   const { page = 1, limit = 10, total = 0 } = pagination;
   const totalPages = Math.ceil(total / limit);
 
@@ -15,6 +20,14 @@ const UsersPageCard = ({ type, users, pagination = {}, onPageChange }) => {
       <FontAwesomeIcon icon={faChevronDown} />
     </button>
   );
+
+  const handleAddUser = () => { 
+      setShowAddUserModal(true);
+  }
+
+  const handleClose = () => {
+    setShowAddUserModal(false);
+  }
 
   const renderDropdowns = () => {
     if (type === "Students") {
@@ -50,11 +63,17 @@ const UsersPageCard = ({ type, users, pagination = {}, onPageChange }) => {
         </div>
       </div>
 
+      <div className="flex flex-row justify-between">
       {renderDropdowns() && (
         <div className="flex flex-row flex-wrap gap-4 mb-4">
           {renderDropdowns()}
         </div>
       )}
+      <button onClick={handleAddUser} className="flex flex-row gap-2 items-center text-sm rounded bg-white px-3 py-1 border border-gray-200 h-2/3">
+        Add {type.toLowerCase().slice(0, -1)}
+        <FontAwesomeIcon icon={faPlus} className="ml-2" />
+      </button>
+      </div>
 
       {users.length > 0 ? (
         users.map((user) => (
@@ -63,7 +82,17 @@ const UsersPageCard = ({ type, users, pagination = {}, onPageChange }) => {
             className="flex flex-row gap-2 justify-between items-center"
           >
             <div className="flex flex-row gap-2">
-              <div className="h-12 w-12 bg-gray-200 rounded-xl" />
+               {user.profile_url !== null ? (
+                <img
+                  src={`http://localhost:8080${user.profile_url}`}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="h-12 w-12 bg-gray-200 rounded-xl">
+                  {/*Image*/}
+                </div>
+              )}
               <div className="flex flex-col">
                 <span className="font-semibold">
                   {user.first_name} {user.last_name} {user.name}
@@ -102,6 +131,7 @@ const UsersPageCard = ({ type, users, pagination = {}, onPageChange }) => {
           </button>
         </div>
       )}
+      <AddUserModal isOpen={showAddUserModal} onClose={handleClose} type={type} />
     </div>
   );
 };

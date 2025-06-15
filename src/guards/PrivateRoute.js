@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }) => {
     return <Loading />;
   }
 
-  return isAuthenticated ? children : <Navigate to="/forbiden" />;
+  return isAuthenticated ? children : <Navigate to="/" />;
 };
 
 export default PrivateRoute;

@@ -3,24 +3,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import PortfolioTitle from "../../components/portfolioTitle";
 import PortfolioSection from "../../components/portfolioSection";
+import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const Portfolio = ({ portfolio }) => {
-
   const [showDialog, setShowDialog] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [newSectionContent, setNewSectionContent] = useState("");
   const [editingIndex, setEditingIndex] = useState(null); // null means "add mode"
+  const [media, setMedia] = useState(null);
+
+  const handleMediaUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setMedia(file);
+    }
+  };
 
   const handleAddOrUpdateSection = () => {
-   
+    console.log(portfolio);
   };
 
-  const handleEdit = () => {
+  const handleEdit = () => {};
 
-  };
-
-  const handleDelete = () => {
-  };
+  const handleDelete = () => {};
 
   const isOwner = () => {
     const userId = parseInt(localStorage.getItem("id"), 10);
@@ -28,7 +33,7 @@ const Portfolio = ({ portfolio }) => {
 
     if (!portfolio.portfolio?.student_id) return false;
 
-    return  portfolio.portfolio.student_id === userId && userRole === "student"; 
+    return portfolio.portfolio.student_id === userId && userRole === "student";
   };
 
   return (
@@ -39,7 +44,7 @@ const Portfolio = ({ portfolio }) => {
           {isOwner() && (
             <button
               onClick={() => {
-                setEditingIndex(null); 
+                setEditingIndex(null);
                 setNewSectionTitle("");
                 setNewSectionContent("");
                 setShowDialog(true);
@@ -49,7 +54,10 @@ const Portfolio = ({ portfolio }) => {
               + Add Section
             </button>
           )}
-          <PortfolioTitle title={portfolio.portfolio.general_description} />
+          <PortfolioTitle
+            title={portfolio.portfolio.general_description}
+            imageUrl={portfolio.portfolio.general_image_URL}
+          />
 
           {portfolio.sections.map((section, index) => (
             <div key={index} className="relative">
@@ -100,6 +108,27 @@ const Portfolio = ({ portfolio }) => {
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none"
               rows={4}
             />
+
+            <div className="flex flex-row items-center gap-6">
+              <label className="w-1/4 border-dashed border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 cursor-pointer py-4">
+                <FontAwesomeIcon icon={faPlus} />
+                <span className="text-center">Add file</span>
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleMediaUpload}
+                />
+              </label>
+
+              {media && (
+                <img
+                  src={URL.createObjectURL(media)}
+                  alt="Preview"
+                  className="w-1/4 object-cover rounded-lg"
+                />
+              )}
+            </div>
+
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => {

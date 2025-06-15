@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Profile from "../../sections/users/profile";
 import { getProfilePosts, getUser } from "../../config/api";
 import { useLocation } from 'react-router-dom';
@@ -8,8 +8,8 @@ function ProfilePage() {
   const [user, setUser] = useState(null);
   const { state } = useLocation();
 
-  const id = state.userId || localStorage.getItem("id");
-  const role = state.userRole || localStorage.getItem("role");
+  const id = state.userId
+  const role = state.userRole
 
   useEffect(() => {
     document.title = "Profile";

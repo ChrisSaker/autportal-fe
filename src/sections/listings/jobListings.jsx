@@ -1,21 +1,25 @@
 import {
   faChevronDown,
   faFile,
-  faPaperPlane,
-  faSearch,
+  faSearch
 } from "@fortawesome/free-solid-svg-icons";
-import { faImage } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import ListingCard from "../../components/listingCard";
 import AddListingModal from "../../components/modals/addListingModal";
 import UsersCard from "../../components/usersCard";
-import ListingCard from "../../components/listingCard";
+import { getAllListings } from "../../config/api";
 
 const Listings = ({ listings, users }) => {
   const [postOwnerFilterOpen, setPostOwnerFilterOpen] = useState(false);
   const [feedFilterOpen, setFeedFilterOpen] = useState(false);
   const [postModalOpen, setPostModalOpen] = useState(false);
   const [postContentDraft, setPostContentDraft] = useState("");
+  const [localListings, setLocalListings] = useState(listings);
+
+  useEffect(() => {
+    setLocalListings(listings);
+  }, [listings]);
 
   const role = localStorage.getItem("role");
 
@@ -23,6 +27,23 @@ const Listings = ({ listings, users }) => {
     setPostOwnerFilterOpen(!postOwnerFilterOpen);
     setFeedFilterOpen(false);
   };
+
+  const fetchListings = async () => {
+      try {
+        const response = await getAllListings();
+        if (response?.data?.data) {
+          setLocalListings(response.data.data);
+        } else {
+          console.warn("Unexpected response structure", response);
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+  const handlePostSuccess = () => { 
+     fetchListings();
+};
 
   const handlePostModalClose = () => {
     setPostModalOpen(false);
@@ -33,18 +54,18 @@ const Listings = ({ listings, users }) => {
   };
 
   const hasPosts = () => {
-    return listings.length > 0;
+    return localListings.length > 0;
   };
+
+  const profileImage = localStorage.getItem("profile_url");
 
   return (
     <div className="flex flex-row justify-center bg-stone-100 p-5 gap-8">
-      {/* Left Sidebar */}
       <div className="flex flex-col gap-4 hidden lg-home:flex">
-        <UsersCard type="Companies" users={users.employers.data} />
+        <UsersCard type="Employers" users={users.employers.data} />
         <UsersCard type="Alumnis" users={users.alumni.data} />
       </div>
 
-      {/* Center Content */}
       <div className="relative shrink w-[32rem]">
         {hasPosts() && (
           <div className="w-full flex flex-col gap-2">
@@ -73,7 +94,15 @@ const Listings = ({ listings, users }) => {
             {/* Share Listing Box */}
             {role === "employer" && (
               <div className="bg-white rounded-lg flex flex-row gap-4 p-4">
+                {profileImage && profileImage !== "null" ? (
+                <img
+                  src={`http://localhost:8080${profileImage}`}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+              ) : (
                 <div className="bg-gray-200 border border-amber-50 w-16 h-16 rounded-lg"></div>
+              )}
                 <div className="w-5/6 flex flex-col gap-2">
                   <input
                     type="text"
@@ -99,9 +128,9 @@ const Listings = ({ listings, users }) => {
             )}
 
             {/* Listings Scrollable Area */}
-            <div className="overflow-y-auto max-h-[80vh] pr-2">
-              {listings.map((item, index) => (
-                <ListingCard key={index} listing={item} />
+            <div className="overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
+              {localListings.map((item, index) => (
+                <ListingCard key={index} Listing={item} />
               ))}
             </div>
 
@@ -140,22 +169,21 @@ const Listings = ({ listings, users }) => {
             <span className="text-xl font-bold">No Listingss Yet</span>
             <span>
               Engage with the community to see the latest updates and shared
-              posts here.
+              listings here.
             </span>
           </div>
         )}
       </div>
 
-      {/* Right Sidebar */}
       <div className="flex flex-col gap-4 hidden lg-home:flex">
         <UsersCard
-          type="Faculty of Applied Sciences"
+          type="Students"
           users={users.students.data}
         />
         <UsersCard type="Instructors" users={users.instructors.data} />
       </div>
 
-      <AddListingModal isOpen={postModalOpen} onClose={handlePostModalClose} />
+      <AddListingModal isOpen={postModalOpen} onClose={handlePostModalClose} onPostSuccess={handlePostSuccess}/>
     </div>
   );
 };

@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 
 import LoginPage from "./pages/authentication/loginPage";
 import HomePage from "./pages/home/homePage";
@@ -11,38 +16,88 @@ import UsersPage from "./pages/users/usersPage";
 import NotificationPage from "./pages/others/notificationsPage";
 import ProfilePage from "./pages/users/profilePage";
 import PortfolioPage from "./pages/portfolios/singlePortfolioPage";
+import SharedPortfolioPage from "./pages/portfolios/sharedPortfolioPage";
 
 function App() {
   return (
     <AuthProvider>
-    <Router>
+      <Router>
         <ConditionalNavBar />
         <Routes>
+          <Route
+            path="/shared/portfolio/:token"
+            element={<SharedPortfolioPage />}
+          />
           <Route path="/" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage />} />
-          {/* <Route path="/portfolios" element={
-            <PrivateRoute>
-            <PortfoliosPage />
-            </PrivateRoute>
-            } /> */}
-          <Route path="/portfolios" element={<PortfoliosPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/jobs" element={<JobListingsPage />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/notifications" element={<NotificationPage />} />
+          <Route
+            path="/home"
+            element={
+              <PrivateRoute>
+                <HomePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/portfolios"
+            element={
+              <PrivateRoute>
+                <PortfoliosPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/portfolio"
+            element={
+              <PrivateRoute>
+                <PortfolioPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/jobs"
+            element={
+              <PrivateRoute>
+                <JobListingsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <UsersPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <ProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <PrivateRoute>
+                <NotificationPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
-    </Router>
-  </AuthProvider>
+      </Router>
+    </AuthProvider>
   );
 }
 
 function ConditionalNavBar() {
   const location = useLocation();
-  const hideNavRoutes = ["/", "/forbiden"];
+  const hideNavRoutes = ["/", "/forbiden", "/shared/portfolio/:token"];
+  const isSharedPortfolio = location.pathname.startsWith("/shared/portfolio/");
 
-  if (hideNavRoutes.includes(location.pathname)) {
-    return null; 
+  if (hideNavRoutes.includes(location.pathname) || isSharedPortfolio) {
+    return null;
   }
 
   return <NavBar />;

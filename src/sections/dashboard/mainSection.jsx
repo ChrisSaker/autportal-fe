@@ -1,8 +1,5 @@
 import { faImage } from "@fortawesome/free-regular-svg-icons";
-import {
-  faChevronDown,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useRef } from "react";
 import AddPostModal from "../../components/modals/addPostModal";
@@ -19,13 +16,15 @@ const Main = ({ Posts, users }) => {
   const [postContentDraft, setPostContentDraft] = useState("");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
-   const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [posts, setPosts] = useState([]);
   const [selectedOwner, setSelectedOwner] = useState("All Feed");
   const [sortBy, setSortBy] = useState("Most Recent");
 
   const contentRef = useRef(null);
+
+  const profileImage = localStorage.getItem("profile_url");
 
   useEffect(() => {
     setPosts(Posts);
@@ -96,7 +95,10 @@ const Main = ({ Posts, users }) => {
       if (searchQuery.trim() !== "") {
         const content = post.content?.toLowerCase() || "";
         const title = post.title?.toLowerCase() || "";
-        return content.includes(searchQuery.toLowerCase()) || title.includes(searchQuery.toLowerCase());
+        return (
+          content.includes(searchQuery.toLowerCase()) ||
+          title.includes(searchQuery.toLowerCase())
+        );
       }
 
       return true;
@@ -115,7 +117,7 @@ const Main = ({ Posts, users }) => {
       ref={contentRef}
     >
       <div className="flex flex-col gap-4 hidden lg-home:flex">
-        <UsersCard type="Companies" users={users.employers.data} />
+        <UsersCard type="Employers" users={users.employers.data} />
         <UsersCard type="Alumnis" users={users.alumni.data} />
       </div>
 
@@ -162,7 +164,15 @@ const Main = ({ Posts, users }) => {
 
             {/* Post Box */}
             <div className="bg-white rounded-lg flex flex-row gap-4 p-4 shadow-md">
-              <div className="bg-gray-200 border border-amber-50 w-16 h-16 rounded-lg"></div>
+              {profileImage && profileImage !== "null" ? (
+                <img
+                  src={`http://localhost:8080${profileImage}`}
+                  alt="Profile"
+                  className="w-12 h-12 rounded-xl object-cover"
+                />
+              ) : (
+                <div className="bg-gray-200 border border-amber-50 w-16 h-16 rounded-lg"></div>
+              )}
               <div className="w-5/6 flex flex-col gap-2">
                 <input
                   type="text"
@@ -187,7 +197,7 @@ const Main = ({ Posts, users }) => {
             </div>
 
             {/* Posts List */}
-            <div className="overflow-y-auto max-h-[100vh] pr-2">
+            <div className="overflow-y-auto max-h-[100vh] custom-scrollbar pr-2">
               {filteredPosts.map((post) => (
                 <Post key={post.id} post={post} onDelete={handleDeletePost} />
               ))}
@@ -196,19 +206,23 @@ const Main = ({ Posts, users }) => {
             {/* Owner Filter Dropdown */}
             {postOwnerFilterOpen && (
               <ul className="absolute top-12 left-36 bg-white w-48 rounded-lg shadow-lg z-50">
-                {["All Feed", "student", "employer", "instructor", "alumni"].map(
-                  (type) => (
-                    <li
-                      key={type}
-                      className={`p-2 hover:bg-gray-100 cursor-pointer ${
-                        selectedOwner === type ? "font-bold" : ""
-                      }`}
-                      onClick={() => handleOwnerSelect(type)}
-                    >
-                      {type}
-                    </li>
-                  )
-                )}
+                {[
+                  "All Feed",
+                  "student",
+                  "employer",
+                  "instructor",
+                  "alumni",
+                ].map((type) => (
+                  <li
+                    key={type}
+                    className={`p-2 hover:bg-gray-100 cursor-pointer ${
+                      selectedOwner === type ? "font-bold" : ""
+                    }`}
+                    onClick={() => handleOwnerSelect(type)}
+                  >
+                    {type}
+                  </li>
+                ))}
               </ul>
             )}
 
@@ -246,10 +260,7 @@ const Main = ({ Posts, users }) => {
       </div>
 
       <div className="flex flex-col gap-4 hidden lg-home:flex">
-        <UsersCard
-          type="Faculty of Applied Sciences"
-          users={users.students.data}
-        />
+        <UsersCard type="Students" users={users.students.data} />
         <UsersCard type="Instructors" users={users.instructors.data} />
       </div>
 
