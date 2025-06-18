@@ -364,7 +364,7 @@ const Post = ({ post, onDelete }) => {
 
           {comments.map((comment, index) => (
             <div key={index} className="relative flex gap-2">
-               {comment.user.profile_url !== null ? (
+                {comment.user && comment.user.profile_url ? (
                 <img
                   src={`http://localhost:8080${comment.user.profile_url}`}
                   alt="Profile"

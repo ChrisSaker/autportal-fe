@@ -150,7 +150,7 @@ const Portfolio = ({ portfolio }) => {
   );
 
   return (
-    <div className="relative max-w-lg bg-white rounded-lg flex flex-col shadow-md">
+    <div className="relative max-w-lg bg-white rounded-lg flex flex-col shadow-md mt-5">
       <div className="flex flex-row justify-between p-4">
         <div className="flex flex-row gap-3">
           {portfolio.student.profile_url ? (
@@ -169,29 +169,32 @@ const Portfolio = ({ portfolio }) => {
           </div>
         </div>
       </div>
-      <div
-        className={`mt-4 relative h-56 flex items-center justify-center ${
-          portfolio.general_image_URL ? "" : "bg-gray-200"
-        }`}
-        style={{
-          backgroundImage: portfolio.general_image_URL
-            ? `url(http://localhost:8080${portfolio.general_image_URL})`
-            : "none",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <p className="p-4 text-lg absolute bg-gray-700 text-white">
-          {portfolio.general_description}
-        </p>
-        <button
-          onClick={handleNavigateToPortfolio}
-          className="absolute bottom-4 right-4 bg-gray-700 text-white text-sm font-semibold p-1 rounded"
-        >
-          + view portfolio
-        </button>
-        <img src={`http://localhost:8080${portfolio.general_image_URL}`} />
-      </div>
+<div
+  className={`mt-4 relative h-56 rounded-xl overflow-hidden shadow-md flex items-center justify-center ${
+    portfolio.general_image_URL ? "" : "bg-gray-200"
+  }`}
+  style={{
+    backgroundImage: portfolio.general_image_URL
+      ? `url(http://localhost:8080${portfolio.general_image_URL})`
+      : "none",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  {/* Overlay text */}
+  <p className="p-4 text-lg font-medium bg-black bg-opacity-60 text-white rounded">
+    {portfolio.general_description}
+  </p>
+
+  {/* Button */}
+  <button
+    onClick={handleNavigateToPortfolio}
+    className="absolute bottom-4 right-4 bg-white text-gray-800 text-sm font-semibold px-3 py-1 rounded shadow hover:bg-gray-100"
+  >
+    + View Portfolio
+  </button>
+</div>
+
       <div className="flex flex-row justify-between p-4 text-sm text-gray-600 items-center">
         <div className="flex flex-row gap-2 items-center">
           <FontAwesomeIcon icon={faEye} />

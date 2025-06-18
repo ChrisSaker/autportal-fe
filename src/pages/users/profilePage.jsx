@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import Profile from "../../sections/users/profile";
 import { getProfilePosts, getUser } from "../../config/api";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 function ProfilePage() {
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
   const { state } = useLocation();
 
-  const id = state.userId
-  const role = state.userRole
+  const id = state.userId;
+  const role = state.userRole;
 
   useEffect(() => {
     document.title = "Profile";
@@ -38,11 +38,11 @@ function ProfilePage() {
           setUser(response.data.data);
         } else {
           console.warn("Unexpected response structure", response);
-          setUser(null); 
+          setUser(null);
         }
       } catch (error) {
         console.error("Error fetching user:", error);
-        setUser(null); 
+        setUser(null);
       }
     };
 
@@ -51,13 +51,13 @@ function ProfilePage() {
   }, []);
 
   if (!user) {
- return (
-  <div className="flex flex-col justify-center items-center h-screen gap-4">
-    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-    <span className="text-gray-600">Loading profile data...</span>
-  </div>
-);
-}
+    return (
+      <div className="flex flex-col justify-center items-center h-screen gap-4">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-gray-600">Loading profile data...</span>
+      </div>
+    );
+  }
 
   return <Profile user={user} Posts={posts} role={role} />;
 }

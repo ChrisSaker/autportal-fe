@@ -11,7 +11,7 @@ const Users = ({ users }) => {
         <UsersPageCard type="Instructors" users={users.instructors.data} />
       </div>
       <div className="flex justify-center">
-        <UsersPageCard type="Companies" users={users.employers.data} />
+        <UsersPageCard type="Employers" users={users.employers.data} />
       </div>
       <div className="flex justify-center">
         <UsersPageCard type="Alumnis" users={users.alumni.data} />
