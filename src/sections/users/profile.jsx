@@ -88,6 +88,14 @@ const Profile = ({ user, Posts, role }) => {
     }
   };
 
+  const _userId = user.id? user.id : user.student_id
+
+  const isOwner = () => {
+    const userRole = localStorage.getItem("role")?.toLowerCase();
+    const userId = parseInt(localStorage.getItem("id"), 10);
+    return userRole === role && _userId === userId;
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-6" ref={contentRef}>
       {/* Profile Image */}
@@ -108,6 +116,7 @@ const Profile = ({ user, Posts, role }) => {
             </div>
           )}
 
+        {isOwner() && (<div>
           <label
             htmlFor="profile-upload"
             className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow cursor-pointer hover:bg-gray-100 transition"
@@ -121,6 +130,7 @@ const Profile = ({ user, Posts, role }) => {
             onChange={handleFileChange}
             className="hidden"
           />
+        </div>)}
         </div>
 
         <h2 className="text-2xl font-semibold mt-3">
