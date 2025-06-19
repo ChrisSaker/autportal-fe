@@ -12,6 +12,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
+  const _token = localStorage.getItem("token");
 
   const toggleMenuDropdown = () => {
     setMenuDropdownOpen(!menuDropdownOpen);
@@ -29,17 +30,17 @@ const NavBar = () => {
   };
 
   const handleRefreshProfile = () => {
-  navigate("/home", { replace: true });
+    navigate("/home", { replace: true });
 
-  setTimeout(() => {
-    navigate("/profile", {
-      state: {
-        userId: localStorage.getItem("id"),
-        userRole: localStorage.getItem("role"),
-      },
-    });
-  }, 50);
-};
+    setTimeout(() => {
+      navigate("/profile", {
+        state: {
+          userId: localStorage.getItem("id"),
+          userRole: localStorage.getItem("role"),
+        },
+      });
+    }, 50);
+  };
 
   const menuItems = [
     { label: "Home", path: "/home" },
@@ -103,7 +104,9 @@ const NavBar = () => {
                 ? "bg-green-500 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
-            onClick={() => navigate("/3d")}
+            onClick={() => {
+              window.location.href = `mygame://start`;
+            }}
           >
             <span className="mr-2">•</span> 3d Community
           </li>
@@ -159,7 +162,9 @@ const NavBar = () => {
               </li>
             ))}
             <li
-              onClick={() => navigate("/3d")}
+              onClick={() => {
+                window.location.href = "mygame://start";
+              }}
               className={`lg-home:hidden px-4 py-2 cursor-pointer ${
                 currentPath === "/3d" ? "bg-green-400 text-white" : ""
               }`}
