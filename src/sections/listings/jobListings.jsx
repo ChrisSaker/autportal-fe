@@ -134,7 +134,7 @@ const Listings = ({ listings, users }) => {
             )}
 
             {/* Listings Scrollable Area */}
-            <div className="overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
+            <div className="overflow-y-auto max-h-[120vh] custom-scrollbar pr-2">
               {filteredListings.map((item) => (
                 <ListingCard key={item.id} Listing={item} onDelete={handleListingDelete}/>
               ))}
