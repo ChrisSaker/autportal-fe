@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import ListingCard from "../../components/listingCard";
 import AddListingModal from "../../components/modals/addListingModal";
 import UsersCard from "../../components/usersCard";
-import { getAllListings } from "../../config/api";
 
 const Listings = ({ listings, users }) => {
   const [postOwnerFilterOpen, setPostOwnerFilterOpen] = useState(false);
@@ -16,6 +15,7 @@ const Listings = ({ listings, users }) => {
   const [postModalOpen, setPostModalOpen] = useState(false);
   const [postContentDraft, setPostContentDraft] = useState("");
   const [localListings, setLocalListings] = useState(listings);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     setLocalListings(listings);
@@ -28,21 +28,12 @@ const Listings = ({ listings, users }) => {
     setFeedFilterOpen(false);
   };
 
-  const fetchListings = async () => {
-      try {
-        const response = await getAllListings();
-        if (response?.data?.data) {
-          setLocalListings(response.data.data);
-        } else {
-          console.warn("Unexpected response structure", response);
-        }
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
+  const handleListingDelete = () => {
+    window.location.reload();
+  }
 
   const handlePostSuccess = () => { 
-     fetchListings();
+     window.location.reload();
 };
 
   const handlePostModalClose = () => {
@@ -56,6 +47,19 @@ const Listings = ({ listings, users }) => {
   const hasPosts = () => {
     return localListings.length > 0;
   };
+
+  const filteredListings = localListings.filter((listing) => {
+  if (searchQuery.trim() !== "") {
+    const title = listing.title?.toLowerCase() || "";
+    const employerName = listing.employer?.name?.toLowerCase() || "";
+    const query = searchQuery.toLowerCase();
+
+    return title.includes(query) || employerName.includes(query);
+  }
+
+  return true;
+});
+
 
   const profileImage = localStorage.getItem("profile_url");
 
@@ -80,15 +84,17 @@ const Listings = ({ listings, users }) => {
                   type="text"
                   className="bg-gray-100 rounded-lg border border-gray-200 pl-10 py-2 focus:outline-none focus:border-green-500"
                   placeholder="I'am looking for..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <button
+              {/* <button
                 className="bg-white py-2 px-4 text-sm text-black font-semibold flex flex-row gap-2 items-center rounded-lg border border-gray-300"
                 onClick={handleOwnerFilterClick}
               >
                 <span>All Categories</span>
                 <FontAwesomeIcon icon={faChevronDown} />
-              </button>
+              </button> */}
             </div>
 
             {/* Share Listing Box */}
@@ -128,9 +134,9 @@ const Listings = ({ listings, users }) => {
             )}
 
             {/* Listings Scrollable Area */}
-            <div className="overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
-              {localListings.map((item, index) => (
-                <ListingCard key={index} Listing={item} />
+            <div className="overflow-y-auto max-h-[120vh] custom-scrollbar pr-2">
+              {filteredListings.map((item) => (
+                <ListingCard key={item.id} Listing={item} onDelete={handleListingDelete}/>
               ))}
             </div>
 
@@ -183,7 +189,7 @@ const Listings = ({ listings, users }) => {
         <UsersCard type="Instructors" users={users.instructors.data} />
       </div>
 
-      <AddListingModal isOpen={postModalOpen} onClose={handlePostModalClose} onPostSuccess={handlePostSuccess}/>
+      <AddListingModal isOpen={postModalOpen} onClose={handlePostModalClose} onPostSuccess={handlePostSuccess} initialConetnt={postContentDraft}/>
     </div>
   );
 };

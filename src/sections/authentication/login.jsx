@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import { Signin } from "../../config/api"
+import { Signin } from "../../config/api";
 import { useAuth } from "../../guards/AuthContext";
 import {
   faArrowRight,
@@ -35,27 +35,27 @@ const Login = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-    const response = await Signin(values);
-    
-    if (response && response.status === 200) {
-      //resetForm();
-      login(response.data)
-      setShowPopup(false);
-      navigate('/home')
-    } else {
-      setLoginMessage(response.message);
+      const response = await Signin(values);
+
+      if (response && response.status === 200) {
+        //resetForm();
+        login(response.data);
+        setShowPopup(false);
+        navigate("/home");
+      } else {
+        setLoginMessage(response.message);
+        setShowPopup(true);
+        setTimeout(() => {
+          setShowPopup(false);
+        }, 1500);
+      }
+    } catch (error) {
+      setLoginMessage("Login failed.");
       setShowPopup(true);
       setTimeout(() => {
         setShowPopup(false);
       }, 1500);
     }
-  } catch (error) {
-    setLoginMessage("Login failed.");
-    setShowPopup(true);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 1500);
-  }
   };
 
   return (
@@ -73,10 +73,8 @@ const Login = () => {
 
       <div className="w-full md:w-4/5 lg:w-2/6 m-0 sm:m-auto">
         <div className="w-full p-7 bg-white flex justify-center flex-col rounded-2xl sm:mb-12">
-          <h2 className="text-4xl mb-4 sm:mb-12">
-            Login
-          </h2>
-          
+          <h2 className="text-4xl mb-4 sm:mb-12">Login</h2>
+
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
@@ -85,9 +83,7 @@ const Login = () => {
             {({ touched, errors, isSubmitting }) => (
               <Form>
                 <div className="flex flex-col sm:gap-1 mb-4 sm:mb-6">
-                  <label className="text-xl">
-                    Email
-                  </label>
+                  <label className="text-xl">Email</label>
                   <Field
                     type="email"
                     name="email"
@@ -103,9 +99,7 @@ const Login = () => {
                   />
                 </div>
                 <div className="flex flex-col sm:gap-1 mb-4 sm:mb-16 relative">
-                  <label className="text-xl">
-                    Password
-                  </label>
+                  <label className="text-xl">Password</label>
                   <div className="flex items-center relative">
                     <Field
                       type={passwordVisible ? "text" : "password"}
@@ -134,7 +128,7 @@ const Login = () => {
                 )}
                 <div className="flex justify-between items-center mb-4 sm:mb-6">
                   <a
-                    href="/forgot-password"
+                    href="mailto:support@autportal.com?subject=Password%20Reset%20Request&body=Hello%2C%0A%0AI%20would%20like%20to%20reset%20my%20password.%20Please%20assist.%0A%0AThank%20you."
                     className="text-black text-sm inline-block bg-gray-100 px-4 py-2 rounded-xl hover:text-red-600"
                   >
                     Forgot Password? <FontAwesomeIcon icon={faChevronRight} />

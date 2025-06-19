@@ -16,9 +16,7 @@ const Portfolios = ({ portfolios, users }) => {
 
   const toggleMajor = (major) => {
     setSelectedMajors((prev) =>
-      prev.includes(major)
-        ? prev.filter((m) => m !== major)
-        : [...prev, major]
+      prev.includes(major) ? prev.filter((m) => m !== major) : [...prev, major]
     );
   };
 
@@ -48,9 +46,7 @@ const Portfolios = ({ portfolios, users }) => {
   ];
 
   const majors = useMemo(() => {
-    const foundMajors = portfolios
-      .map((p) => p.student?.major)
-      .filter(Boolean);
+    const foundMajors = portfolios.map((p) => p.student?.major).filter(Boolean);
     const uniqueMajors = Array.from(new Set(foundMajors));
     return uniqueMajors.length > 0 ? uniqueMajors : defaultMajors;
   }, [portfolios]);
@@ -97,18 +93,23 @@ const Portfolios = ({ portfolios, users }) => {
                 className="bg-white py-2 px-4 text-sm text-black font-semibold flex flex-row gap-2 items-center rounded-lg border border-gray-300"
                 onClick={handleOwnerFilterClick}
               >
-                <span>{selectedMajors.length === 0 ? "All Majors" : "Filter Applied"}</span>
+                <span>
+                  {selectedMajors.length === 0
+                    ? "All Majors"
+                    : "Filter Applied"}
+                </span>
                 <FontAwesomeIcon icon={faChevronDown} />
               </button>
             </div>
 
-            {filteredPortfolios.map((item) => (
-              <Portfolio key={item.id} portfolio={item} />
-            ))}
-
+            <div className="overflow-y-auto max-h-[100vh] custom-scrollbar pr-2">
+              {filteredPortfolios.map((item) => (
+                <Portfolio key={item.id} portfolio={item} />
+              ))}
+            </div>
             {postOwnerFilterOpen && (
               <ul className="absolute top-12 left-36 bg-white w-72 max-h-64 overflow-y-auto rounded-lg shadow-lg z-10">
-                {majors.map((major) => (
+                {defaultMajors.map((major) => (
                   <li
                     key={major}
                     className="flex flex-row gap-4 items-center justify-between p-2"

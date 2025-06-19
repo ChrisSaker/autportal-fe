@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
@@ -13,6 +13,22 @@ const NavBar = () => {
   const location = useLocation();
   const { logout } = useAuth();
   const _token = localStorage.getItem("token");
+
+   const [profileImageUrl, setProfileImageUrl] = useState(
+    localStorage.getItem("profile_url")
+  );
+
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === "profile_url") {
+        setProfileImageUrl(event.newValue);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   const toggleMenuDropdown = () => {
     setMenuDropdownOpen(!menuDropdownOpen);
@@ -60,7 +76,6 @@ const NavBar = () => {
   const currentPath = location.pathname;
   const active = pathToLabelMap[currentPath] || "";
 
-  const profileImageUrl = localStorage.getItem("profile_url");
 
   return (
     <div className="w-full bg-white flex flex-row justify-between items-center p-4 sm:p-8 m-0 relative">
@@ -115,9 +130,9 @@ const NavBar = () => {
         <FontAwesomeIcon
           icon={faBell}
           className={`h-7 w-7 cursor-pointer hidden sm:block ${
-            notificationsDropdownOpen ? "text-green-400" : "text-gray-500"
+            notificationsDropdownOpen ? "text-green-400" : "text-gray-200"
           }`}
-          onClick={toggleNotificationsDropdown}
+          //onClick={toggleNotificationsDropdown}
         />
 
         <div className="flex flex-row rounded-lg bg-white border border-slate-300 p-1 items-center gap-1 cursor-pointer">
@@ -171,7 +186,6 @@ const NavBar = () => {
             >
               3d Community
             </li>
-            <li className="px-4 py-2 cursor-pointer">Profile</li>
             <li className="sm:hidden px-4 py-2 cursor-pointer">
               Notifications
             </li>

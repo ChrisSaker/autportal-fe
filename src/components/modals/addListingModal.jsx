@@ -9,6 +9,7 @@ const AddListingModal = ({
   isOpen,
   onClose,
   listing = null,
+  initialConetnt = "",
   onPostSuccess,
 }) => {
   const [popupMessage, setPopupMessage] = useState(null);
@@ -69,7 +70,7 @@ const AddListingModal = ({
         <Formik
           enableReinitialize
           initialValues={{
-            title: listing?.title || "",
+            title: listing?.title || initialConetnt || "",
             description: listing?.description || "",
             salary: listing?.salary || "",
             location: listing?.location || "",

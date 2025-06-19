@@ -87,29 +87,40 @@ const Main = ({ Posts, users }) => {
   }, [activeItem, currentPage]);
 
   const filteredPosts = posts
-    .filter((post) => {
-      if (selectedOwner !== "All Feed" && post.user_role !== selectedOwner) {
-        return false;
-      }
+  .filter((post) => {
+    if (selectedOwner !== "All Feed" && post.user_role !== selectedOwner) {
+      return false;
+    }
 
-      if (searchQuery.trim() !== "") {
-        const content = post.content?.toLowerCase() || "";
-        const title = post.title?.toLowerCase() || "";
-        return (
-          content.includes(searchQuery.toLowerCase()) ||
-          title.includes(searchQuery.toLowerCase())
-        );
-      }
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      const content = post.content?.toLowerCase() || "";
+      const title = post.title?.toLowerCase() || "";
 
-      return true;
-    })
-    .sort((a, b) => {
-      if (sortBy === "Most Popular") {
-        return (b.likeCount || 0) - (a.likeCount || 0);
-      } else {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      }
-    });
+      const firstName = post.user?.first_name?.toLowerCase() || "";
+      const lastName = post.user?.last_name?.toLowerCase() || "";
+      const fullName = `${firstName} ${lastName}`.trim();
+
+      const nameFallback = post.user?.name?.toLowerCase() || "";
+
+      return (
+        content.includes(query) ||
+        title.includes(query) ||
+        (firstName && fullName.includes(query)) ||
+        (!firstName && nameFallback.includes(query))
+      );
+    }
+
+    return true;
+  })
+  .sort((a, b) => {
+    if (sortBy === "Most Popular") {
+      return (b.likeCount || 0) - (a.likeCount || 0);
+    } else {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+  });
+
 
   return (
     <div
@@ -121,7 +132,7 @@ const Main = ({ Posts, users }) => {
         <UsersCard type="Alumnis" users={users.alumni.data} />
       </div>
 
-      <div className="relative shrink w-[32rem] flex items-center">
+      <div className="relative shrink w-[32rem] flex">
         <div className="absolute top-0 w-full z-50">
           {showSuccessPopup && (
             <div className="bg-green-500 text-white text-center py-2 rounded shadow-lg mb-4">

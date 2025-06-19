@@ -153,6 +153,26 @@ export async function getAllEmployers(queryParams) {
   return resp;
 }
 
+export async function addUser(data) {
+  const resp = await PrivateJsonDataApiCall.post('users', data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+
+export async function editUser(id,type, data) {
+  const resp = await PrivateJsonDataApiCall.put(`users/${type}/${id}`, data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+
+export async function deleteUser(id,type) {
+  const resp = await PrivateJsonDataApiCall.delete(`users/${type}/${id}`)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////PORTFOLIOS/////////////////////////////////
@@ -220,6 +240,34 @@ export async function getSuggestions(id) {
       .catch((error) => errorCatch(error));
     return resp;
   }
+
+  export async function editPortfolio(id, data) {
+  const resp = await PrivateMultipartDataApiCall.put(`portfolios/${id}`, data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+export async function addSection(id, data) {
+  console.log('data', data);
+  const resp = await PrivateMultipartDataApiCall.post(`portfolios/section/${id}`, data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+
+export async function editSection(id, data) {
+  const resp = await PrivateMultipartDataApiCall.put(`portfolios/section/${id}`, data)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
+
+export async function deleteSection(id) {
+  const resp = await PrivateMultipartDataApiCall.delete(`portfolios/section/${id}`)
+    .then((response) => response)
+    .catch((error) => errorCatch(error));
+  return resp;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////JOB-LISTINGS///////////////////////////////

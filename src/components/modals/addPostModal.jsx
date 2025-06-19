@@ -38,7 +38,7 @@ const AddPostModal = ({
       formData.append("content", values.postContent);
 
       if (media) {
-        formData.append("imageUrl", media);
+        formData.append("image", media);
       }
 
       try {
@@ -52,7 +52,6 @@ const AddPostModal = ({
         }
       } catch (error) {
         console.error("Error creating post:", error);
-        alert("Failed to create post. Please try again.");
       }
     },
   });
@@ -114,7 +113,8 @@ const AddPostModal = ({
             <div className="text-red-500 text-sm">{errors.postContent}</div>
           )}
 
-          <label className="w-full border-dashed border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 cursor-pointer py-4">
+<div  className="flex flex-row gap-2 items-center">
+          <label className="w-1/4 h-20 border-dashed border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 cursor-pointer py-4">
             <FontAwesomeIcon icon={faPlus} />
             <span className="text-center">Add media</span>
             <input
@@ -128,9 +128,10 @@ const AddPostModal = ({
             <img
               src={URL.createObjectURL(media)}
               alt="Preview"
-              className="w-full h-40 object-cover rounded-lg"
+              className="w-1/4 h-20 object-cover rounded-lg"
             />
           )}
+          </div>
 
           <div className="flex flex-row gap-2 justify-end">
             <button

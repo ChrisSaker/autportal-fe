@@ -6,17 +6,33 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddListingModal from "./modals/addListingModal";
+import { deleteListing } from "../config/api";
 
-const ListingCard = ({ Listing }) => {
+const ListingCard = ({ Listing, onDelete }) => {
   const [listingMenuOpen, setListingMenuOpen] = useState(false);
   const [postModalOpen, setPostModalOpen] = useState(false);
   const [editingListing, setEditingListing] = useState(null);
   const [listing, setListing] = useState(Listing);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handlePostSuccess = (updatedListing) => { 
       setListing(updatedListing);
       setListingMenuOpen(false);
   }
+
+   const confirmDeleteListing = async () => {
+      try {
+        const res = await deleteListing(listing.id);
+        if (res?.data?.success) {
+        setShowDeleteModal(false);
+        if (onDelete) onDelete(listing.id);
+      }
+      } catch (error) {
+        console.error("Error deleting listing", error);
+      } finally {
+        setShowDeleteModal(false);
+      }
+    };
 
   const handleMenuClick = () => {
     setListingMenuOpen(!listingMenuOpen);
@@ -41,13 +57,15 @@ const ListingCard = ({ Listing }) => {
   const createdAt = listing.createdAt;
   const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
 
+  const profileURL = Listing.employer?.profile_url || null;
+
   return (
     <div className="relative max-w-lg bg-white rounded-xl shadow-md flex flex-col mb-6 border border-gray-200">
       {/* Header */}
       <div className="flex flex-row justify-between p-4">
         <div className="flex flex-row gap-3">
-          {listing.employer.profile_url ? (<img
-                  src={`http://localhost:8080${listing.employer.profile_url}`}
+          {profileURL? (<img
+                  src={`http://localhost:8080${profileURL}`}
                   alt="Profile"
                   className="w-16 h-16 rounded-xl object-cover"
                 />) : (<div className="rounded-xl bg-gray-200 w-16 h-16" />)}
@@ -94,9 +112,37 @@ const ListingCard = ({ Listing }) => {
       {listingMenuOpen && (
         <ul className="absolute top-12 right-4 bg-white w-24 rounded-lg shadow-lg border border-gray-100 z-10">
           <li onClick={handlePostModalOpen} className="p-2 hover:bg-gray-100 cursor-pointer">Edit</li>
-          <li className="p-2 hover:bg-gray-100 cursor-pointer">Delete</li>
+          <li 
+          onClick={() => {
+              setShowDeleteModal(true);
+              setListingMenuOpen(false);
+            }}
+          className="p-2 hover:bg-gray-100 cursor-pointer text-red-600">Delete</li>
         </ul>
       )}
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+        <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+        <p className="mb-4">Are you sure you want to delete this listing?</p>
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={() => setShowDeleteModal(false)}
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmDeleteListing}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>)
+      }
 
       <AddListingModal isOpen={postModalOpen} onClose={handlePostModalClose} listing={editingListing} onPostSuccess={handlePostSuccess}/>
     </div>
